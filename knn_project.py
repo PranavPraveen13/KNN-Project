@@ -1,10 +1,14 @@
 import numpy as np
 
 def load_data(file_path):
-    data = np.genfromtxt(file_path, delimiter=',')
-    X = data[:, :-1]
-    y = data[:, -1]
+    with open(file_path, 'r') as file:
+        lines = file.readlines()
+    data = [line.strip().split(',') for line in lines]
+    X = np.array([line[:-1] for line in data], dtype=float)
+    y = np.array([line[-1] for line in data])
     return X, y
+
+
 
 def euclidean_distance(x1, x2):
     return np.sqrt(np.sum((x1 - x2) ** 2))
@@ -66,6 +70,9 @@ def main():
             X_test, y_test = load_data(test_file_path)
             y_pred = classify_test_set(X_train, y_train, X_test, k)
             acc = accuracy(y_test, y_pred)
+            print("Predicted labels for test set:")
+            for i in range(len(y_test)):
+                print("Observation", i+1, "- Predicted Label:", y_pred[i])
             print("Accuracy:", acc)
 
         elif option == 'b':
